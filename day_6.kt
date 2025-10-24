@@ -2,11 +2,10 @@ import java.io.File
 
 
 const val GUARD_CHAR: Char = '^'
-//const val GUARD_CHARS: Set<Char> = setOf('^', '>', '<', 'v')
 const val WALL_CHAR: Char = '#'
 
 fun main() {
-    //part1()
+    part1()
     part2()
 }
 
