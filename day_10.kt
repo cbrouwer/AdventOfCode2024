@@ -13,7 +13,6 @@ fun part1() {
 
     val sumOfAllRoutes = startingPoints.sumOf { 
         val routes = walk(it, input, setOf(it))
-        println("Found $routes for starting point $it")
         routes.count()
     }
     println("Part 1: $sumOfAllRoutes")
@@ -40,10 +39,27 @@ fun getPossibleMoves(from: MapPoint, map: List<MapPoint>, pointsSeen: Set<MapPoi
 
 
 fun part2() {
-    val input = getInput()
+    val input = getInput()    
+    val startingPoints = input.filter { it.score == 0 }
 
-    
-    
+    val sumOfAllRoutes = startingPoints.sumOf { 
+        val routes = walkp2(it, input, setOf(it))
+        routes
+    }
+    println("Part 2: $sumOfAllRoutes")
+}
+
+fun walkp2(from: MapPoint, map: List<MapPoint>, pointsSeen: Set<MapPoint>): Int {
+    val possibleMoves = getPossibleMoves(from, map, pointsSeen)
+    return when {
+        from.score == 9 -> 1
+        possibleMoves.isEmpty() -> 0
+        else -> {
+            possibleMoves.map { 
+                walkp2(it, map, pointsSeen+it)
+            }.sum()
+        }
+    }
 }
 
 fun getInput(): List<MapPoint> = File("day_10_input.txt").readLines()
