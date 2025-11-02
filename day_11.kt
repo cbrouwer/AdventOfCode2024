@@ -35,26 +35,22 @@ fun blink(stone: Stone): List<Stone> =
 
 fun part2() {
     val input = getInput()
-    val sum =  blinkRec(25, input)
+    val sum =  blinkRec(75, input)
 
     println("Part 2: $sum")
 }
 
-fun blinkRec(blinksLeft: Int, stones: List<Stone>): Int {
-    return when { 
-        blinksLeft == 0 -> {
-            stones.size
-        }
-        else -> {
-            val leftStoneCount = blinkRec(blinksLeft-1, blink(stones.take(1))) 
-            val remainingCount = if (stones.size > 1) {
-                blinkRec(blinksLeft, stones.takeLast(stones.size - 1))
-            } else { 
-                0
-            }
-            leftStoneCount + remainingCount
-        }
-    }
+val cacheMap = emptyMap<Pair<Int, Long>, Long>().toMutableMap()
+
+fun blinkRec(blinksLeft: Int, stones: List<Stone>): Long {
+    if (blinksLeft == 0) return stones.size.toLong()
+   
+    val lookupKey: Pair<Int, Long> = blinksLeft-1 to stones.first().number
+    val leftStoneCount = cacheMap.getOrPut(lookupKey) { blinkRec(blinksLeft-1, blink(stones.first())) }
+    
+    val remainingCount = if (stones.size <= 1) 0 else blinkRec(blinksLeft, stones.drop(1))
+    return leftStoneCount + remainingCount
+        
 }
 
 fun getInput(): List<Stone> = File("day_11_input.txt").readLines().first().split(" ").map { it.toStone() } 
